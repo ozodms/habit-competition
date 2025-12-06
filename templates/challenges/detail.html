@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}{{ object.name }} — Habit Competition{% endblock %}
+{% block content %}
+<a href="/challenges/" class="text-sm underline">&larr; Back to list</a>
+
+<header class="mt-2 mb-4">
+    <h1 class="text-2xl font-semibold flex items-center gap-3">
+        {{ object.name }}
+        <span class="text-xs px-2 py-1 rounded border">{{ object.status|title }}</span>
+    </h1>
+    <p class="text-sm text-gray-600">{{ object.start_date }} → {{ object.end_date }}</p>
+</header>
+
+<section class="prose max-w-none">
+    <p>{{ object.description|default:"No description yet." }}</p>
+</section>
+
+<section class="mt-6">
+    <h2 class="text-lg font-semibold mb-2">Habits in this challenge</h2>
+    <ul class="list-disc pl-5 text-sm">
+        {% for chh in object.challenge_habits.all %}
+        <li>{{ chh.habit.title }} <span class="text-gray-500">(weight {{ chh.weight }})</span></li>
+        {% empty %}
+        <li>No habits yet.</li>
+        {% endfor %}
+    </ul>
+</section>
+
+<section class="mt-6">
+    <h2 class="text-lg font-semibold mb-2">Actions</h2>
+    <p class="text-sm">Join/Leave and Check-in buttons will be added.</p>
+</section>
+{% endblock %}
