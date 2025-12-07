@@ -17,9 +17,38 @@
 
 <section class="mt-6">
     <h2 class="text-lg font-semibold mb-2">Habits in this challenge</h2>
-    <ul class="list-disc pl-5 text-sm">
+
+    <ul class="space-y-3">
         {% for chh in object.challenge_habits.all %}
-        <li>{{ chh.habit.title }} <span class="text-gray-500">(weight {{ chh.weight }})</span></li>
+        <li class="bg-white border rounded p-3 flex items-center justify-between">
+            <div>
+                <div class="font-medium">{{ chh.habit.title }}</div>
+                <div class="text-sm text-gray-600">
+                    weight {{ chh.weight }} · max/day {{ chh.habit.max_per_day }}
+                </div>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <span class="text-sm">Today:</span>
+                <span class="px-2 py-1 border rounded text-sm min-w-8 text-center">
+                    {{ chh.today_qty|default:0 }}
+                </span>
+
+                {% if request.user.is_authenticated and enrollment %}
+                <form method="post" action="{% url 'tracking:minus' object.slug chh.habit.id %}">
+                    {% csrf_token %}
+                    <button class="px-2 py-1 border rounded" title="Undo one">−</button>
+                </form>
+                <form method="post" action="{% url 'tracking:plus' object.slug chh.habit.id %}">
+                    {% csrf_token %}
+                    <button class="px-2 py-1 border rounded bg-black text-white" title="Add one">+</button>
+                </form>
+                {% else %}
+                <a href="/accounts/login/?next={{ request.path }}"
+                    class="px-3 py-1 rounded bg-black text-white text-sm">Sign in</a>
+                {% endif %}
+            </div>
+        </li>
         {% empty %}
         <li>No habits yet.</li>
         {% endfor %}
@@ -27,7 +56,24 @@
 </section>
 
 <section class="mt-6">
-    <h2 class="text-lg font-semibold mb-2">Actions</h2>
-    <p class="text-sm">Join/Leave and Check-in buttons will be added.</p>
+    <h2 class="text-lg font-semibold mb-2">Participants</h2>
+    <p class="text-sm text-gray-600 mb-3">{{ participants_count }} joined</p>
+
+    {% if request.user.is_authenticated %}
+    {% if enrollment %}
+    <form method="post" action="{% url 'participation:leave' object.slug %}">
+        {% csrf_token %}
+        <button class="px-4 py-2 rounded border text-red-600">Leave challenge</button>
+    </form>
+    {% else %}
+    <form method="post" action="{% url 'participation:join' object.slug %}">
+        {% csrf_token %}
+        <button class="px-4 py-2 rounded bg-black text-white">Join challenge</button>
+    </form>
+    {% endif %}
+    {% else %}
+    <a href="/accounts/login/?next={{ request.path }}" class="px-4 py-2 rounded bg-black text-white inline-block">Sign
+        in to join</a>
+    {% endif %}
 </section>
 {% endblock %}

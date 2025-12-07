@@ -13,15 +13,33 @@
         <div class="max-w-5xl mx-auto px-4 py-3 flex justify-between items-center">
             <a href="/" class="font-semibold text-lg">Habit Competition</a>
             <nav class="flex gap-4 text-sm">
+                {% if request.user.is_authenticated %}
+                <span class="text-sm">Hi, {{ request.user.username }}</span>
+                <a class="hover:underline" href="/accounts/logout/">Logout</a>
+                {% else %}
+                <a class="hover:underline" href="/accounts/login/">Login</a>
+                {% endif %}
                 <a class="hover:underline" href="/habits/">Habits</a>
                 <a class="hover:underline" href="/challenges/">Challenges</a>
                 <a class="hover:underline" href="/admin/">Admin</a>
             </nav>
         </div>
     </header>
+
     <main class="max-w-5xl mx-auto px-4 py-6">
+        {% if messages %}
+        <ul class="mb-4 space-y-2">
+            {% for message in messages %}
+            <li
+                class="text-sm px-3 py-2 rounded border {% if message.tags == 'error' %}border-red-600 text-red-700{% elif message.tags == 'warning' %}border-yellow-600 text-yellow-700{% else %}border-green-700 text-green-800{% endif %}">
+                {{ message }}
+            </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
         {% block content %}{% endblock %}
     </main>
+
 </body>
 
 </html>

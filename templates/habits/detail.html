@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+
 {% block title %}{{ object.title }} — Habit{% endblock %}
 {% block content %}
 <a href="{% url 'habits:list' %}" class="text-sm underline">&larr; Back to list</a>
