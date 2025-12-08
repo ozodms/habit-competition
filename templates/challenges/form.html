@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}{{ view.object|default_if_none:"Create challenge" }} — Challenge{% endblock %}
+{% block content %}
+<a href="{% url 'challenges:list' %}" class="text-sm underline">&larr; Back to challenges</a>
+<h1 class="text-2xl font-semibold mt-2">{{ view.object|default_if_none:"Create challenge" }}</h1>
+
+<form method="post" class="form-controls mt-4 bg-white border rounded p-4 max-w-xl">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+
+    <div class="mb-3">
+        <label class="block text-sm mb-1">Name</label>
+        {{ form.name }}
+    </div>
+    <div class="mb-3">
+        <label class="block text-sm mb-1">Description</label>
+        {{ form.description }}
+    </div>
+    <div class="mb-3">
+        <label class="block text-sm mb-1">Start date</label>
+        {{ form.start_date }}
+    </div>
+    <div class="mb-4">
+        <label class="block text-sm mb-1">End date</label>
+        {{ form.end_date }}
+    </div>
+    <div class="mb-4">
+        <label class="inline-flex items-center gap-2">
+            {{ form.is_public }} <span>Public</span>
+        </label>
+    </div>
+
+    <button class="px-4 py-2 rounded bg-black text-white">Save</button>
+</form>
+{% endblock %}

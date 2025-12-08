@@ -1,0 +1,73 @@
+{% extends "base.html" %} {% block title %}Manage habits — {{ challenge.name }}{% endblock %} {% block content %}
+<a href="{{ challenge.get_absolute_url }}" class="text-sm underline">&larr; Back to challenge</a>
+
+<h1 class="text-2xl font-semibold mt-2">Manage habits — {{ challenge.name }}</h1>
+<p class="text-sm text-gray-600">{{ challenge.start_date }} → {{ challenge.end_date }}</p>
+
+<form method="post" class="mt-4 bg-white border rounded p-4">
+    {% csrf_token %}
+
+    <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+            <thead class="border-b">
+                <tr>
+                    <th class="text-left p-2">Use</th>
+                    <th class="text-left p-2">Habit</th>
+                    <th class="text-left p-2">Owner</th>
+                    <th class="text-right p-2">Max/day</th>
+                    <th class="text-right p-2">Weight</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in rows %}
+                <tr class="border-b last:border-0">
+                    <td class="p-2 align-middle">
+                        <input
+                            type="checkbox"
+                            name="habits"
+                            value="{{ row.habit.id }}"
+                            {%
+                            if
+                            row.checked
+                            %}
+                            checked
+                            {%
+                            endif
+                            %}
+                        />
+                    </td>
+                    <td class="p-2">{{ row.habit.title }}</td>
+                    <td class="p-2">
+                        {% if row.habit.is_global %}
+                        <span class="text-xs px-2 py-1 border rounded">global</span>
+                        {% else %} {{ row.habit.owner.username }} {% endif %}
+                    </td>
+                    <td class="p-2 text-right">{{ row.habit.max_per_day }}</td>
+                    <td class="p-2 text-right">
+                        <input
+                            type="number"
+                            step="0.1"
+                            min="0.1"
+                            max="100"
+                            name="weight_{{ row.habit.id }}"
+                            value="{{ row.weight }}"
+                            class="w-24 border rounded px-2 py-1 text-right"
+                        />
+                    </td>
+                </tr>
+                {% endfor %} {% if rows|length == 0 %}
+                <tr>
+                    <td class="p-3" colspan="5">
+                        No eligible habits yet. Create one in <a class="underline" href="/habits/create/">Habits</a>.
+                    </td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="mt-4">
+        <button class="px-4 py-2 rounded bg-black text-white">Save</button>
+    </div>
+</form>
+{% endblock %}

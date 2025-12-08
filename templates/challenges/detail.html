@@ -84,4 +84,25 @@
         </a>
     </div>
 </section>
+
+{% if request.user.is_authenticated %}
+{% if request.user.is_staff or request.user.id == object.created_by_id %}
+<div class="mt-4 flex gap-3">
+    <a class="px-3 py-2 rounded border" href="{% url 'challenges:edit' object.slug %}">Edit</a>
+    <a class="px-3 py-2 rounded border text-red-600" href="{% url 'challenges:delete' object.slug %}">Delete</a>
+</div>
+{% endif %}
+{% endif %}
+
+{% if request.user.is_authenticated %}
+{% if request.user.is_staff or request.user.id == object.created_by_id %}
+<div class="mt-4 flex gap-3">
+    <a class="px-3 py-2 rounded border" href="{% url 'challenges:manage_habits' object.slug %}">Manage habits</a>
+    <a class="px-3 py-2 rounded border" href="{% url 'challenges:edit' object.slug %}">Edit</a>
+    <a class="px-3 py-2 rounded border text-red-600" href="{% url 'challenges:delete' object.slug %}">Delete</a>
+</div>
+{% endif %}
+{% endif %}
+
+
 {% endblock %}
