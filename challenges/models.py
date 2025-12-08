@@ -1,9 +1,11 @@
 from django.db import models
+from django.conf import settings
 from django.urls import reverse
 from django.utils.text import slugify
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 from habits.models import Habit
+from django.contrib.auth import get_user_model
 
 class Challenge(models.Model):
     name = models.CharField(max_length=120, unique=True)
@@ -12,6 +14,7 @@ class Challenge(models.Model):
     start_date = models.DateField()
     end_date = models.DateField()
     is_public = models.BooleanField(default=True)
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="created_challenges", null=True, blank=True,)
 
     class Meta:
         ordering = ["-start_date"]

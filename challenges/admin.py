@@ -7,7 +7,7 @@ class ChallengeHabitInline(admin.TabularInline):
 
 @admin.register(Challenge)
 class ChallengeAdmin(admin.ModelAdmin):
-    list_display = ("name", "start_date", "end_date", "is_public", "status_badge")
+    list_display = ("name", "start_date", "end_date", "is_public", "created_by")
     list_filter = ("is_public",)
     search_fields = ("name", "slug", "description")
     prepopulated_fields = {"slug": ("name",)}
