@@ -29,6 +29,7 @@ class ChallengeList(ListView):
         return ctx
 
 
+
 class ChallengeDetail(DetailView):
     model = Challenge
     template_name = "challenges/detail.html"
@@ -40,19 +41,22 @@ class ChallengeDetail(DetailView):
         user = self.request.user
         enrollment = None
         if user.is_authenticated:
-            enrollment = Enrollment.objects.filter(
-                user=user, challenge=self.object
-            ).first()
+            enrollment = Enrollment.objects.filter(user=user, challenge=self.object).first()
         ctx["enrollment"] = enrollment
         ctx["participants_count"] = self.object.enrollments.count()
 
+        chh_list = list(self.object.challenge_habits.select_related("habit"))
         if enrollment:
             today = timezone.localdate()
             qty_map = {
                 c.habit_id: c.quantity
                 for c in Checkin.objects.filter(enrollment=enrollment, done_at=today)
             }
-            for chh in self.object.challenge_habits.select_related("habit"):
+            for chh in chh_list:
                 chh.today_qty = qty_map.get(chh.habit_id, 0)
+        else:
+            for chh in chh_list:
+                chh.today_qty = 0
 
+        ctx["challenge_habits"] = chh_list
         return ctx

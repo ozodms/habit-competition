@@ -22,7 +22,7 @@ INSTALLED_APPS = [
     "challenges",
     "participation",
     "tracking",
-    "scoring",
+    "scoring.apps.ScoringConfig",
     "notifications",
     "dashboard",
 ]
