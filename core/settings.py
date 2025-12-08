@@ -10,6 +10,13 @@ SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret")
 DEBUG = os.getenv("DEBUG", "0") == "1"
 ALLOWED_HOSTS = []
 
+LOGIN_REDIRECT_URL = "/"
+LOGOUT_REDIRECT_URL = "/"
+LOGIN_URL = "/accounts/login/"
+
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
