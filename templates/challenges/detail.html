@@ -19,7 +19,7 @@
     <h2 class="text-lg font-semibold mb-2">Habits in this challenge</h2>
 
     <ul class="space-y-3">
-        {% for chh in object.challenge_habits.all %}
+        {% for chh in challenge_habits %}
         <li class="bg-white border rounded p-3 flex items-center justify-between">
             <div>
                 <div class="font-medium">{{ chh.habit.title }}</div>
@@ -75,5 +75,13 @@
     <a href="/accounts/login/?next={{ request.path }}" class="px-4 py-2 rounded bg-black text-white inline-block">Sign
         in to join</a>
     {% endif %}
+</section>
+
+<section class="mt-6">
+    <div class="mt-4">
+        <a class="inline-block px-3 py-2 rounded border" href="{% url 'scoring:leaderboard' object.slug %}">
+            Open leaderboard
+        </a>
+    </div>
 </section>
 {% endblock %}
