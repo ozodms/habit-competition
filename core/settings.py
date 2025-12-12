@@ -1,14 +1,14 @@
-from pathlib import Path
 import os
+from pathlib import Path
 from dotenv import load_dotenv
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / ".env")
 
-SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret")
-DEBUG = os.getenv("DEBUG", "0") == "1"
-ALLOWED_HOSTS = []
+DEBUG = os.getenv("DJANGO_DEBUG", "0") == "1"
+SECRET_KEY = os.getenv("SECRET_KEY", "unsafe-dev-key")
+ALLOWED_HOSTS = [h for h in os.getenv("ALLOWED_HOSTS", "").split(",") if h] or ["*"]
 
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
@@ -68,11 +68,11 @@ WSGI_APPLICATION = "core.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.getenv("PG_DB", "habitdb"),
-        "USER": os.getenv("PG_USER", "habituser"),
-        "PASSWORD": os.getenv("PG_PASS", "habitpass"),
-        "HOST": os.getenv("PG_HOST", "127.0.0.1"),
-        "PORT": os.getenv("PG_PORT", "5432"),
+        "NAME": os.getenv("POSTGRES_DB", "habitdb"),
+        "USER": os.getenv("POSTGRES_USER", "habituser"),
+        "PASSWORD": os.getenv("POSTGRES_PASSWORD", "habitpass"),
+        "HOST": os.getenv("POSTGRES_HOST", "db"),
+        "PORT": os.getenv("POSTGRES_PORT", "5432"),
     }
 }
 
@@ -96,6 +96,9 @@ TIME_ZONE = "Europe/Riga"
 USE_I18N = True
 USE_TZ = True
 
-STATIC_URL = "static/"
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_DIRS = [BASE_DIR / "static"]
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
