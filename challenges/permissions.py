@@ -1,4 +1,15 @@
+from django.db.models import Q
+from .models import Challenge
 from participation.models import Enrollment
+
+
+def visible_challenges_qs(user):
+    qs = Challenge.objects.all()
+    if not user.is_authenticated:
+        return qs.filter(is_public=True)
+    return qs.filter(
+        Q(is_public=True) | Q(created_by=user) | Q(enrollments__user=user)
+    ).distinct()
 
 
 def user_can_manage_challenge(user, challenge) -> bool:

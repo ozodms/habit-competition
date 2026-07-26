@@ -12,10 +12,9 @@ from django.views.generic import (
 )
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
-from django.db.models import Q
 from django.utils import timezone
 from .models import Challenge, ChallengeHabit
-from .permissions import user_can_manage_challenge
+from .permissions import user_can_manage_challenge, visible_challenges_qs
 from participation.models import Enrollment
 from tracking.models import Checkin
 
@@ -27,13 +26,7 @@ class ChallengeList(ListView):
     paginate_by = 10
 
     def get_queryset(self):
-        qs = Challenge.objects.all()
-        user = self.request.user
-        qs = qs.filter(
-            Q(is_public=True)
-            | Q(created_by=user if user.is_authenticated else None)
-            | Q(enrollments__user=user if user.is_authenticated else None)
-        ).distinct()
+        qs = visible_challenges_qs(self.request.user)
         status = self.request.GET.get("status")
         today = timezone.localdate()
         if status == "active":
@@ -55,6 +48,9 @@ class ChallengeDetail(DetailView):
     template_name = "challenges/detail.html"
     slug_field = "slug"
     slug_url_kwarg = "slug"
+
+    def get_queryset(self):
+        return visible_challenges_qs(self.request.user)
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)

@@ -21,9 +21,13 @@ class HabitList(LoginRequiredMixin, ListView):
         user = self.request.user
         return Habit.objects.filter(models.Q(is_global=True) | models.Q(owner=user)).order_by("title")
 
-class HabitDetail(DetailView):
+class HabitDetail(LoginRequiredMixin, DetailView):
     model = Habit
     template_name = "habits/detail.html"
+
+    def get_queryset(self):
+        user = self.request.user
+        return Habit.objects.filter(models.Q(is_global=True) | models.Q(owner=user))
 
 class HabitCreate(LoginRequiredMixin, CreateView):
     model = Habit
@@ -56,7 +60,7 @@ class HabitUpdate(LoginRequiredMixin, OwnerOrStaffRequired, UpdateView):
         return super().form_valid(form)
 
 
-class HabitDelete(LoginRequiredMixin, DeleteView):
+class HabitDelete(LoginRequiredMixin, OwnerOrStaffRequired, DeleteView):
     model = Habit
     template_name = "habits/confirm_delete.html"
     success_url = reverse_lazy("habits:list")
